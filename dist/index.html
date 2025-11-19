@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TexMind Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter for UI, Fira Code for Editor -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <!-- PrismJS Tomorrow Theme (Dark) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+      :root {
+        --bg-dark: #0f172a;
+        --bg-darker: #020617;
+        --accent: #6366f1;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-darker);
+      }
+
+      /* Custom Scrollbar - Slim & Sleek */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #475569; 
+      }
+        
+      /* Editor Alignment Fixes */
+      .prism-editor {
+        box-sizing: border-box;
+      }
+
+      .code-font, 
+      .prism-editor textarea, 
+      .prism-editor pre {
+        font-family: "Fira Code", "Fira Mono", "Menlo", "Monaco", "Consolas", "Courier New", monospace !important;
+        font-size: 14px !important;
+        line-height: 1.6 !important;
+        white-space: pre !important; 
+        overflow-wrap: normal !important;
+        word-break: keep-all !important;
+      }
+        
+      .prism-editor textarea {
+        outline: none !important;
+        caret-color: #818cf8; /* Indigo-400 */
+      }
+        
+      .prism-editor pre {
+        background: transparent !important;
+        text-shadow: none !important;
+      }
+
+      /* LaTeX Syntax Highlighting Extensions */
+      .token.latex-warning {
+        color: #fbbf24 !important; 
+        font-weight: bold;
+        text-decoration: underline wavy #f59e0b;
+      }
+      .token.latex-error {
+        color: #f87171 !important; 
+        background: rgba(239, 68, 68, 0.06);
+        font-weight: 600;
+        text-decoration: underline wavy #ef4444;
+      }
+
+      /* Professional Markdown Styles (GitHub Dark-ish) */
+      .markdown-body {
+        color: #e2e8f0;
+        line-height: 1.75;
+        font-size: 16px;
+      }
+      
+      .markdown-body h1, .markdown-body h2, .markdown-body h3, 
+      .markdown-body h4, .markdown-body h5, .markdown-body h6 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        line-height: 1.25;
+        color: #f1f5f9;
+      }
+
+      .markdown-body h1 { font-size: 2.25em; border-bottom: 1px solid #1e293b; padding-bottom: 0.3em; }
+      .markdown-body h2 { font-size: 1.75em; border-bottom: 1px solid #1e293b; padding-bottom: 0.3em; }
+      .markdown-body h3 { font-size: 1.5em; }
+      .markdown-body h4 { font-size: 1.25em; }
+
+      .markdown-body p { margin-bottom: 1.25em; }
+      
+      .markdown-body a { color: #818cf8; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+      .markdown-body a:hover { border-bottom-color: #818cf8; }
+
+      .markdown-body code {
+        font-family: 'Fira Code', monospace;
+        font-size: 0.875em;
+        background-color: rgba(30, 41, 59, 0.5);
+        padding: 0.2em 0.4em;
+        border-radius: 4px;
+        color: #e2e8f0;
+        border: 1px solid #334155;
+      }
+
+      .markdown-body pre {
+        background-color: #0f172a;
+        padding: 1.25rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        margin-bottom: 1.5rem;
+        border: 1px solid #1e293b;
+      }
+      .markdown-body pre code {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        color: inherit;
+      }
+
+      .markdown-body blockquote {
+        border-left: 4px solid #6366f1;
+        padding-left: 1.5em;
+        color: #94a3b8;
+        margin: 1.5em 0;
+        font-style: italic;
+        background: linear-gradient(to right, rgba(99, 102, 241, 0.05), transparent);
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        border-radius: 0 4px 4px 0;
+      }
+
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 1.75em;
+        margin-bottom: 1.25em;
+      }
+      .markdown-body li { margin-bottom: 0.5em; }
+      .markdown-body li::marker { color: #64748b; }
+
+      .markdown-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5em;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid #334155;
+      }
+      
+      .markdown-body th {
+        background-color: #1e293b;
+        font-weight: 600;
+        text-align: left;
+        padding: 0.75rem;
+        border-bottom: 1px solid #334155;
+      }
+      
+      .markdown-body td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #1e293b;
+      }
+      
+      .markdown-body tr:last-child td { border-bottom: none; }
+
+      .markdown-body hr {
+        height: 1px;
+        background-color: #334155;
+        border: none;
+        margin: 2rem 0;
+      }
+
+      .katex { font-size: 1.15em; }
+      .katex-display { margin: 1.5em 0; overflow-x: auto; overflow-y: hidden; }
+    </style>
+
+<link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "react-markdown": "https://aistudiocdn.com/react-markdown@^10.1.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "remark-gfm": "https://aistudiocdn.com/remark-gfm@^4.0.1",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "rehype-katex": "https://aistudiocdn.com/rehype-katex@^7.0.1",
+    "remark-math": "https://aistudiocdn.com/remark-math@^6.0.0",
+    "prismjs": "https://esm.sh/prismjs@1.29.0",
+    "react-simple-code-editor": "https://esm.sh/react-simple-code-editor@0.14.1?external=react",
+    "path": "https://aistudiocdn.com/path@^0.12.7",
+    "vite": "https://aistudiocdn.com/vite@^7.2.2",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
+    "katex": "https://aistudiocdn.com/katex@^0.16.25",
+    "url": "https://aistudiocdn.com/url@^0.11.4"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-CPJjiixh.js"></script>
+</head>
+  <body class="h-screen overflow-hidden antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div id="root" class="h-full"></div>
+  </body>
+</html>
