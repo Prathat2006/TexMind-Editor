@@ -1,0 +1,5 @@
+{
+  "name": "TexMind Editor",
+  "description": "A split-view Markdown and LaTeX editor with AI-powered syntax correction.",
+  "requestFramePermissions": []
+}
